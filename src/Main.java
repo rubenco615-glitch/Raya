@@ -2,6 +2,35 @@ import java.util.Scanner;
 
 public class Main {
 
+    // Devuelve "Jugador 1 (X)" o "Jugador 2 (O)" según la ficha.
+    private static String nombreJugador(Ficha ficha) {
+        if (ficha == Ficha.X) {
+            return "Jugador 1 (X)";
+        } else {
+            return "Jugador 2 (O)";
+        }
+    }
+
+    /**
+     * Pide al usuario un número entre min y max (inclusive) hasta que introduzca
+     * un valor válido. Rechaza entradas vacías, no numéricas o fuera de rango.
+     */
+    private static int leerNumero(Scanner scanner, String mensaje, int min, int max) {
+        while (true) {
+            System.out.print(mensaje);
+            String linea = scanner.nextLine().trim();
+            try {
+                int valor = Integer.parseInt(linea);
+                if (valor >= min && valor <= max) {
+                    return valor;
+                }
+            } catch (NumberFormatException e) {
+                // No era un número entero; se vuelve a pedir.
+            }
+            System.out.println("Entrada no válida. Introduce un número entre " + min + " y " + max + ".");
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Partida partida = new Partida(3);
@@ -10,24 +39,22 @@ public class Main {
         System.out.println(partida);
 
         while (!partida.terminada()) {
-            System.out.print("Introduce fila (1-3): ");
-            int fila = scanner.nextInt() - 1;
+            String jugador = nombreJugador(partida.getTurno());
+            System.out.println("--- Turno de " + jugador + " ---");
 
-            System.out.print("Introduce columna (1-3): ");
-            int columna = scanner.nextInt() - 1;
+            int fila    = leerNumero(scanner, "Introduce fila (1-3): ",    1, 3) - 1;
+            int columna = leerNumero(scanner, "Introduce columna (1-3): ", 1, 3) - 1;
 
-            if (fila < 0 || fila > 2 || columna < 0 || columna > 2) {
-                System.out.println("Posición fuera del tablero. Inténtalo de nuevo.");
+            if (!partida.jugar(fila, columna)) {
+                System.out.println("⚠ Posición ya ocupada. Elige otra casilla.");
                 continue;
             }
-
-            partida.jugar(fila, columna);
             System.out.println(partida);
         }
 
         Ficha ganador = partida.ganador();
         if (ganador != null) {
-            System.out.println("¡Ha ganado: " + ganador + "!");
+            System.out.println("¡Ha ganado " + nombreJugador(ganador) + "!");
         } else {
             System.out.println("¡Empate!");
         }

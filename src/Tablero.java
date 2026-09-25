@@ -32,9 +32,9 @@ public class Tablero {
     // Comprueba si la ficha dada ha ganado en alguna dirección.
     public boolean gana(Ficha ficha) {
         return ganaHorizontal(ficha)
-            || ganaVertical(ficha)
-            || ganaDiagonalDirecta(ficha)
-            || ganaDiagonalIndirecta(ficha);
+                || ganaVertical(ficha)
+                || ganaDiagonalDirecta(ficha)
+                || ganaDiagonalIndirecta(ficha);
     }
 
     // Comprueba victorias en filas.
